@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { backendroute } from '../../routes/routes';
 
 
 
@@ -10,6 +12,18 @@ export default function EstoquePage() {
 
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        axios.get(backendroute.getAllProducts)
+            .then((res) => {
+                setProducts(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     const handleDeleteClick = (id) => {
         setItemToDelete(id);
@@ -49,59 +63,25 @@ export default function EstoquePage() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <Td>Brahma</Td>
-                            <Td>Bebida</Td>
-                            <Td>10</Td>
-                            <Td>R$ 5.00</Td>
-                            <Td>
-                                <Link to={"/estoque/1"}>
-                                    <EditIcon icon={faEdit} />
-                                </Link>
+                        {products.map((p) => (
+                            <tr key={p.id}>
+                                <Td>{p.description}</Td>
+                                <Td>{p.id_category}</Td>
+                                <Td>{p.quantity}</Td>
+                                <Td>{p.price}</Td>
+                                <Td>
+                                    <Link to={"/estoque/1"}>
+                                        <EditIcon icon={faEdit} />
+                                    </Link>
 
-                            </Td>
-                            <Td>
-                                <button onClick={() => handleDeleteClick(170792)}>
-                                    <DeleteIcon icon={faTrashAlt} />
-                                </button>
-                            </Td>
-                        </tr>
-                        <tr>
-                            <Td>Heineken</Td>
-                            <Td>Bebida</Td>
-                            <Td>20</Td>
-                            <Td>R$ 9.00</Td>
-                            <Td>
-                                <EditIcon icon={faEdit} />
-                            </Td>
-                            <Td>
-                                <DeleteIcon icon={faTrashAlt} />
-                            </Td>
-                        </tr>
-                        <tr>
-                            <Td>Pomada Capilar</Td>
-                            <Td>Cremes</Td>
-                            <Td>8</Td>
-                            <Td>R$ 20.00</Td>
-                            <Td>
-                                <EditIcon icon={faEdit} />
-                            </Td>
-                            <Td>
-                                <DeleteIcon icon={faTrashAlt} />
-                            </Td>
-                        </tr>
-                        <tr>
-                            <Td>Ficha</Td>
-                            <Td>Sinuca</Td>
-                            <Td>180</Td>
-                            <Td>R$ 2.00</Td>
-                            <Td>
-                                <EditIcon icon={faEdit} />
-                            </Td>
-                            <Td>
-                                <DeleteIcon icon={faTrashAlt} />
-                            </Td>
-                        </tr>
+                                </Td>
+                                <Td>
+                                    <button onClick={() => handleDeleteClick(p.id)}>
+                                        <DeleteIcon icon={faTrashAlt} />
+                                    </button>
+                                </Td>
+                            </tr>
+                        ))}
 
                     </tbody>
                 </Table>
