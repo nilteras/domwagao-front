@@ -1,17 +1,41 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-
+import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 
 
 export default function EstoquePage() {
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+
+    const handleDeleteClick = (id) => {
+        setItemToDelete(id);
+        setShowConfirmation(true);
+    };
+
+
+    const handleConfirmDelete = (id) => {
+        // Aqui você pode enviar uma solicitação para a API para excluir o item com o ID
+        // Lembre-se de tratar a exclusão e redirecionamento de acordo com a lógica da sua aplicação.
+
+        // Após a exclusão e redirecionamento, você pode fechar a caixa de confirmação.
+        console.log(itemToDelete)
+        setShowConfirmation(false);
+    };
     return (
         <>
             <div>
                 <ButtonContainer>
-                    <Button>Adicionar Produto</Button>
-                    <Button>Adicionar Compra</Button>
+                    <Link to={"/estoque/adicionar"}>
+                        <Button>Adicionar Produto</Button>
+                    </Link>
+                    <Link to={"/estoque/novacompra"}>
+                        <Button>Adicionar Compra</Button>
+                    </Link>
+
                 </ButtonContainer>
                 <Table>
                     <thead>
@@ -31,10 +55,15 @@ export default function EstoquePage() {
                             <Td>10</Td>
                             <Td>R$ 5.00</Td>
                             <Td>
-                                <EditIcon icon={faEdit} />
+                                <Link to={"/estoque/1"}>
+                                    <EditIcon icon={faEdit} />
+                                </Link>
+
                             </Td>
                             <Td>
-                                <DeleteIcon icon={faTrashAlt} />
+                                <button onClick={() => handleDeleteClick(170792)}>
+                                    <DeleteIcon icon={faTrashAlt} />
+                                </button>
                             </Td>
                         </tr>
                         <tr>
@@ -76,6 +105,13 @@ export default function EstoquePage() {
 
                     </tbody>
                 </Table>
+                {showConfirmation && (
+                    <div>
+                        <p>Tem certeza de que deseja excluir este item?</p>
+                        <button onClick={handleConfirmDelete}>Confirmar</button>
+                        <button onClick={() => setShowConfirmation(false)}>Cancelar</button>
+                    </div>
+                )}
             </div>
 
         </>
